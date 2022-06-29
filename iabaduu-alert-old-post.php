@@ -16,15 +16,15 @@
 class AlertOldPost {
 
 	protected $_notification;
-	protected $_years;
+	protected $_months;
 
 	// hook all plugin action and filter
 	function __construct() {
 		// Initialize setting options on activation
-		register_activation_hook(__FILE__, array($this, 'aop_settings_default_values'));
+		register_activation_hook(__FILE__, array($this, 'iaop_settings_default_values'));
 
 		// register Menu
-		add_action('admin_menu', array($this, 'aop_settings_menu'));
+		add_action('admin_menu', array($this, 'iaop_settings_menu'));
 
 		// hook plugin section and field to admin_init
 		add_action('admin_init', array($this, 'pluginOption'));
@@ -37,27 +37,27 @@ class AlertOldPost {
 
 	}
 
-	public function aop_settings_default_values() {
-		$aop_plugin_options = array(
-		'notification' => 'This post hasn\'t been updated in over 1 year.',
-		'years' => 1
+	public function iaop_settings_default_values() {
+		$iaop_plugin_options = array(
+		'notification' => 'This post hasn\'t been updated in over 12 month.',
+		'months' => 12
 		);
-		update_option('apo_alert_old_post', $aop_plugin_options);
+		update_option('apo_alert_old_post', $iaop_plugin_options);
 	}
 
 	// get option value from the database
 	public function databaseValues() {
 		$options = get_option('apo_alert_old_post');
 		$this -> _notification = $options['notification'];
-		$this -> _years = $options['years'];
+		$this -> _months = $options['months'];
 	}
 
 	// Adding Submenu to settings
-	public function aop_settings_menu() {
-		add_options_page('Alert Post is Old',
-		'Alert Post is Old',
+	public function iaop_settings_menu() {
+		add_options_page('Alert Old Post',
+		'Alert Old Post',
 		'manage_options',
-		'aop-alert-post-old',
+		'iaop-alert-post-old',
 		array($this, 'alert_post_old_function')
 		);
 	}
@@ -68,43 +68,43 @@ class AlertOldPost {
 		screen_icon();
 		echo '<h2>Alert Post is Old</h2>';
 		echo '<form action="options.php" method="post">';
-		do_settings_sections('aop-alert-post-old');
-		settings_fields('aop_settings_group');
+		do_settings_sections('iaop-alert-post-old');
+		settings_fields('iaop_settings_group');
 		submit_button();
 
 	}
 
 	// plugin field and sections
 	public function pluginOption() {
-		add_settings_section('aop_settings_section',
+		add_settings_section('iaop_settings_section',
 		'Plugin Options',
 		null,
-		'aop-alert-post-old'
+		'iaop-alert-post-old'
 		);
 
 		add_settings_field('notification',
 		'<label for="notification">Notification to display when post is old</label>',
-		array($this, 'aop_notification'),
-		'aop-alert-post-old',
-		'aop_settings_section'
+		array($this, 'iaop_notification'),
+		'iaop-alert-post-old',
+		'iaop_settings_section'
 		);
 
-		add_settings_field('years',
-		'<label for="years">Number of years for a post to be considered old</label>',
-		array($this, 'aop_years'),
-		'aop-alert-post-old',
-		'aop_settings_section'
+		add_settings_field('months',
+		'<label for="months">Number of months for a post to be considered old</label>',
+		array($this, 'iaop_months'),
+		'iaop-alert-post-old',
+		'iaop_settings_section'
 		);
 
 		// register settings
-		register_setting('aop_settings_group', 'apo_alert_old_post');
+		register_setting('iaop_settings_group', 'apo_alert_old_post');
 	}
 
 	// ------------------------------------------------------------------
 	// Settings section callback function
 	// ------------------------------------------------------------------
 
-	public function aop_notification() {
+	public function iaop_notification() {
 		// call database values just like global in procedural
 		$this -> databaseValues();
 		echo '<textarea id="notification" cols="50" rows="3" name="apo_alert_old_post[notification]">';
@@ -113,10 +113,10 @@ class AlertOldPost {
 
 	}
 
-	public function aop_years() {
+	public function iaop_months() {
 		// call database values
 		$this -> databaseValues();
-		echo '<input type="number" id="years" name="apo_alert_old_post[years]" value="' . esc_attr($this -> _years) . '">';
+		echo '<input type="number" id="months" name="apo_alert_old_post[months]" value="' . esc_attr($this -> _months) . '">';
 
 	}
 
@@ -158,17 +158,17 @@ TREE;
 		// call database values
 		$this -> databaseValues();
 
-		// get settings year
-		$setYear = $this -> _years;
+		// get settings month
+		$setMonth = $this -> _months;
 
 		// get notification text
 		$notification = $this -> _notification;
 		// calculate post age
-		$year = date('Y') - get_post_time('Y', true, $post -> ID);
+		$month = date('Y') - get_post_time('Y', true, $post -> ID);
 
 		// show notification only on post
 		if (is_single()) :
-			if ($year > $setYear) {
+			if ($month > $setMonth) {
 				echo '<div class="oldPost">';
 				echo '<i class="fa fa-exclamation-circle" aria-hidden="true" role="img"></i>';
 				echo "<span class='oldtext'>$notification</span>";

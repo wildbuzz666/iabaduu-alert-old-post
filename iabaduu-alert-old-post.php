@@ -42,12 +42,12 @@ class AlertOldPost {
 		'notification' => 'This post hasn\'t been updated in over 12 month.',
 		'months' => 12
 		);
-		update_option('apo_alert_old_post', $iaop_plugin_options);
+		update_option('iaop_alert_old_post', $iaop_plugin_options);
 	}
 
 	// get option value from the database
 	public function databaseValues() {
-		$options = get_option('apo_alert_old_post');
+		$options = get_option('iaop_alert_old_post');
 		$this -> _notification = $options['notification'];
 		$this -> _months = $options['months'];
 	}
@@ -97,7 +97,7 @@ class AlertOldPost {
 		);
 
 		// register settings
-		register_setting('iaop_settings_group', 'apo_alert_old_post');
+		register_setting('iaop_settings_group', 'iaop_alert_old_post');
 	}
 
 	// ------------------------------------------------------------------
@@ -107,7 +107,7 @@ class AlertOldPost {
 	public function iaop_notification() {
 		// call database values just like global in procedural
 		$this -> databaseValues();
-		echo '<textarea id="notification" cols="50" rows="3" name="apo_alert_old_post[notification]">';
+		echo '<textarea id="notification" cols="50" rows="3" name="iaop_alert_old_post[notification]">';
 		echo esc_attr($this -> _notification);
 		echo '</textarea>';
 
@@ -116,7 +116,7 @@ class AlertOldPost {
 	public function iaop_months() {
 		// call database values
 		$this -> databaseValues();
-		echo '<input type="number" id="months" name="apo_alert_old_post[months]" value="' . esc_attr($this -> _months) . '">';
+		echo '<input type="number" id="months" name="iaop_alert_old_post[months]" value="' . esc_attr($this -> _months) . '">';
 
 	}
 
@@ -164,15 +164,18 @@ TREE;
 		// get notification text
 		$notification = $this -> _notification;
 		// calculate post age
-		//$month = date('Y') - get_post_time('Y', true, $post -> ID);
 
-		$postdate = date_create_from_format('Y-m-d', date('Y-m-d'));
-		$today = date_create_from_format('Y-m-d', get_post_time('U', true, $post -> ID));
-		$interval = date_diff($today, $postdate);
+		$unixdate = get_post_time('U', true, $post -> ID);
+		$postdate = date('Y-m-d', $unixdate);
+		$today = date('Y-m-d');
+		$date1 = strtotime($postdate);
+  		$date2 = strtotime($today);
+		$diff = abs($date2 - $date1);
+		$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
 
 		// show notification only on post
 		if (is_single()) :
-			if ($interval > $setMonth) {
+			if ($months >= $setMonth) {
 				echo '<div class="oldPost">';
 				echo '<i class="fa fa-exclamation-circle" aria-hidden="true" role="img"></i>';
 				echo "<span class='oldtext'>$notification</span>";

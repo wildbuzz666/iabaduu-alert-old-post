@@ -15,7 +15,7 @@ A simple plugin to display an alert when a post is older than # months.
 
 Useful to notify the user that the content may be outdated.
 
-Credits: https://code.tutsplus.com/tutorials/how-to-build-a-wordpress-plugin-to-identify-old-posts--cms-20642
+An updated version of an old code found online.
 
 == Installation ==
 1. Upload plugin directory to the "/wp-content/plugins/" directory.

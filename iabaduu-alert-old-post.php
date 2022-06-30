@@ -7,7 +7,6 @@
  Author: iabaduu srl
  Version: 1.0
  Author URI: http://iabaduu.com/
- Credits: https://code.tutsplus.com/tutorials/how-to-build-a-wordpress-plugin-to-identify-old-posts--cms-20642
  */
 
 /**
@@ -29,8 +28,8 @@ class AlertOldPost {
 		// hook plugin section and field to admin_init
 		add_action('admin_init', array($this, 'pluginOption'));
 
-		// add the plugin stylesheet to header
-		add_action('wp_head', array($this, 'stylesheet'));
+		// register the plugin stylesheet
+		add_action( 'wp_enqueue_scripts', array($this, 'load_iaop_stylesheet') );
 
 		// display notification above post
 		add_filter('the_content', array($this, 'displayNotification'));
@@ -125,32 +124,11 @@ class AlertOldPost {
 	// ------------------------------------------------------------------
 
 	// plugin Stylesheet
-	public function stylesheet() {
-		echo <<<TREE
-		<!-- Alert post is old (author: http://iabaduu.com) -->
-	<style type="text/css">
-	.oldPost {
-		padding-top: 8px;
-		padding-bottom: 8px;
-		background-color: white;
-		color: red;
-		border: 1px solid;
-		padding: 4px 12px 12px;
-		margin-bottom: 20px;
-		border-radius: 6px;
-		}
-
-		span.oldtext  {
-		padding-top: 0px;
-		color: red;
-		margin-left: 20px;
-		}
-	</style>
-	<!-- /Alert post is old -->
-
-TREE;
-
+	public function load_iaop_stylesheet(){
+		  wp_register_style('iaop', plugin_dir_url( __FILE__ ).'iaop.css');
+			wp_enqueue_style('iaop');
 	}
+
 
 	// display notification above post
 	public function displayNotification($content) {
@@ -169,7 +147,7 @@ TREE;
 		$postdate = date('Y-m-d', $unixdate);
 		$today = date('Y-m-d');
 		$date1 = strtotime($postdate);
-  		$date2 = strtotime($today);
+  	$date2 = strtotime($today);
 		$diff = abs($date2 - $date1);
 		$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
 

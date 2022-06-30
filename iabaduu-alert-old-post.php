@@ -66,7 +66,7 @@ class AlertOldPost {
 	public function alert_post_old_function() {
 		echo '<div class="wrap">';
 		screen_icon();
-		echo '<h2>Alert Post is Old</h2>';
+		echo '<h2>Alert Old Post</h2>';
 		echo '<form action="options.php" method="post">';
 		do_settings_sections('iaop-alert-post-old');
 		settings_fields('iaop_settings_group');
@@ -164,11 +164,15 @@ TREE;
 		// get notification text
 		$notification = $this -> _notification;
 		// calculate post age
-		$month = date('Y') - get_post_time('Y', true, $post -> ID);
+		//$month = date('Y') - get_post_time('Y', true, $post -> ID);
+
+		$postdate = date_create_from_format('Y-m-d', date('Y-m-d'));
+		$today = date_create_from_format('Y-m-d', get_post_time('U', true, $post -> ID));
+		$interval = date_diff($today, $postdate);
 
 		// show notification only on post
 		if (is_single()) :
-			if ($month > $setMonth) {
+			if ($interval > $setMonth) {
 				echo '<div class="oldPost">';
 				echo '<i class="fa fa-exclamation-circle" aria-hidden="true" role="img"></i>';
 				echo "<span class='oldtext'>$notification</span>";

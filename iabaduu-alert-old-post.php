@@ -147,7 +147,7 @@ class AlertOldPost {
 		$postdate = date('Y-m-d', $unixdate);
 		$today = date('Y-m-d');
 		$date1 = strtotime($postdate);
-  	$date2 = strtotime($today);
+  		$date2 = strtotime($today);
 		$diff = abs($date2 - $date1);
 		$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
 

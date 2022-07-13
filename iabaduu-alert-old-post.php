@@ -149,7 +149,7 @@ class AlertOldPost {
 		$date1 = strtotime($postdate);
   		$date2 = strtotime($today);
 		$diff = abs($date2 - $date1);
-		$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+		$months = floor($diff/2629746);
 
 		// show notification only on standard post. CP -> is_singular( array( 'newspaper', 'book' ) );
 		if (is_singular('post' )) :

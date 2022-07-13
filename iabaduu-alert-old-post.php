@@ -151,8 +151,8 @@ class AlertOldPost {
 		$diff = abs($date2 - $date1);
 		$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
 
-		// show notification only on post
-		if (is_single()) :
+		// show notification only on standard post. CP -> is_singular( array( 'newspaper', 'book' ) );
+		if (is_singular('post' )) :
 			if ($months >= $setMonth) {
 				echo '<div class="oldPost">';
 				echo '<i class="fa fa-exclamation-circle" aria-hidden="true" role="img"></i>';
